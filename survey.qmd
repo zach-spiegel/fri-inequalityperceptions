@@ -1,0 +1,506 @@
+---
+format: html
+echo: false
+warning: false
+theme: sketchy
+barcolor: "#585454"
+barposition: top 
+---
+
+```{r}
+library(surveydown)
+```
+
+::: {#welcome .sd-page}
+# How equal is wealth divided in our country? 💰
+
+This survey will ask you to guess the current level of wealth inequality in the United States. After you submit, you will be shown the actual level of inequality.
+
+![](inequality%20graphic.png){fig-align="center"}
+
+```{r}
+
+sd_question(
+  type  = "text",
+  id    = "participant_id",
+  label = "Create a survey password for use in other FRI Public Health Surveys (you will need to save this!). Password will need to be 5 characters and 4 numbers. (ex. bills2000 or happy3232 or phlfs9934)"
+)
+
+sd_question(
+  type  = "text",
+  id    = "team_id",
+  label = "If you were assigned a team ID, enter it here! (ex. FRI-PH-1) If you were not assigned a team ID, leave this field blank."
+)
+
+
+sd_next(next_page = "demographics")
+```
+:::
+
+::: {#demographics .sd-page}
+## Please enter your demographic information to begin.
+
+```{r}
+sd_question(
+  type = "mc",
+  id = "education",
+  label = "What is the highest level of education you have completed?",
+  option = c(
+    "Some high school or less" = "highschool_less",
+    "High school diploma or GED" = "highschool_GED",
+    "Some college, but no degree" = "some_college",
+    "Associates or technical degree" = "associates",
+    "Bachelor’s degree" = "bachelors",
+    "Graduate or professional degree (MA, MS, MBA, PhD, JD, MD, DDS etc.)" = "graduate",
+    "Prefer not to say" = "PNS"
+  )
+)
+
+
+```
+
+![](ladder.png){fig-align="center" width="413"}
+
+```{r}
+sd_question(
+  type = "mc_buttons",
+  id = "socialstatus",
+  label = "Think of this ladder as representing where people stand in the United States.
+  
+At the top of the ladder are the people who are the best off – those who have the most money,
+the most education, and the most respected jobs. At the bottom are the people who are the
+worst off – those who have the least money, least education, the least respected jobs, or no job.
+The higher up you are on this ladder, the closer you are to the people at the very top; the lower
+you are, the closer you are to the people at the very bottom. 
+
+Please select the rung where you
+think you stand at this time in your life relative to other people in the United States.",
+option = c(
+  "10" = "10",
+  "9" = "9",
+  "8" = "8",
+  "7" = "7",
+  "6" = "6",
+  "5" = "5",
+  "4" = "4",
+  "3" = "3",
+  "2" = "2",
+  "1" = "1"
+  )
+)
+
+sd_question(
+  type = "mc",
+  id = "income",
+  label = "What was your total household income before taxes during the past 12 months?",
+  option = c(
+    "Less than $25,000" = "less25k",
+    "$25,000-$49,999" = "25k-49k",
+    "$50,000-$74,999" = "50k-74k",
+     "$75,000-$99,999" = "75k-99k",
+    "$100,000-$149,999" = "100k-149k",
+    "$150,000 or more" =  "more150k",
+    "Prefer not to say" = "PNS"
+  )
+)
+
+sd_question(
+  type = "mc_multiple",
+  id = "religion",
+  label = "Please select any of the following religious ideologies you affiliate with,
+if any:", 
+option = c(
+  "Christian" = "christian",
+  "Muslim" = "muslim",
+  "Hindu" = "hindu",
+  "Buddhist" = "buddhist",
+  "Jewish" = "jewish",
+  "Folk Religion" = "folk_religion",
+  "Other" = "other",
+  "Religiously Unaffiliated " = "unaffiliated",
+  "Decline to Answer" = "PNS"
+  )
+)
+
+sd_question(
+  type = "mc_multiple",
+  id = "racialized_id",
+  label = "What is your race?", 
+option = c(
+  "American Indian or Alaska Native" = "native",
+  "Asian" = "asian",
+  "Black or African American" = "black_aa",
+  "Hispanic or Latine" = "hispanic",
+  "Middle Eastern or North African" = "middle_eastern",
+  "Native Hawaiian or Pacific Islander" = "pacific_islander",
+  "White" = "white_caucasian",
+  "Other " = "other",
+  "Prefer not to say" = "PNS"
+  )
+)
+
+sd_question(
+  type = "mc",
+  id = "street_race",
+  label = "If you were walking down the street, what race do you think other Americans
+who do not know you personally would assume you were based on what you look like?", 
+option = c(
+  "Asian American" = "asian_am",
+  "Native American/American Indian" = "native_am",
+  "White" = "white_caucasian",
+  "Latine" = "latine",
+  "Black" = "black_aa",
+  "Arab" = "arab",
+  "Mexican" = "mexican",
+  "Some other race " = "other",
+  "I don't know" = "idk"
+  )
+)
+
+sd_question(
+  type = "mc",
+  id = "disability",
+  label = "Do you identify as a person with a disability or other chronic condition?", 
+option = c(
+ "Yes" = "yes",
+ "No" = "no",
+ "Decline to answer" = "PNS"
+)
+)
+
+sd_question(
+  type = "mc",
+  id = "gender",
+  label = "Gender identity is how someone feels about their own gender. There are many ways a person can describe their gender identity and many labels a person can use. Which of the following terms best describes your current gender identity?", 
+option = c(
+ "Girl or woman" = "woman",
+ "Boy or man" = "man",
+ "Nonbinary, genderfluid, or genderqueer" = "nonbinary_gfluid_gqueer",
+ "I am not sure or questioning" = "not_sure",
+ "I don’t know what this question means"= "idk",
+ "Decline to answer" = "PNS"
+)
+)
+
+sd_question(
+  type = "mc",
+  id = "sexual_id",
+  label = "Sexual orientation is a person’s emotional, romantic, and/or sexual attractions to another person. There are many ways a person can describe their sexual
+orientation and many labels a person can use. Which of these options best describes your
+sexual orientation?", 
+option = c(
+ "Straight or heterosexual" = "straight",
+ "Gay or lesbian" = "gay",
+ "Bisexual, pansexual, or queer" = "bi_pan_queer",
+ "Asexual" = "asexual",
+ "I am not sure"= "not_sure",
+ "I don’t know what this question means"= "idk",
+ "Decline to answer" = "PNS"
+)
+)
+
+sd_question(
+  type  = "select",
+  id    = "state",
+  label = "What state are you from?",
+  option = c(
+    "Alabama" = "AL",
+    "Alaska" = "AK",
+    "Arizona" = "AZ",
+    "Arkansas" = "AR",
+    "California" = "CA",
+    "Colorado" = "CO",
+    "Connecticut" = "CT",
+    "Delaware" = "DE",
+    "Florida" = "FL",
+    "Georgia" = "GA",
+    "Hawaii" = "HI",
+    "Idaho" = "ID",
+    "Illinois" = "IL",
+    "Indiana" = "IN",
+    "Iowa" = "IA",
+    "Kansas" = "KS",
+    "Kentucky" = "KY",
+    "Louisiana" = "LA",
+    "Maine" = "ME",
+    "Maryland" = "MD",
+    "Massachusetts" = "MA",
+    "Michigan" = "MI",
+    "Minnesota" = "MN",
+    "Mississippi" = "MS",
+    "Missouri" = "MO",
+    "Montana" = "MT",
+    "Nebraska" = "NE",
+    "Nevada" = "NV",
+    "New Hampshire" = "NH",
+    "New Jersey" = "NJ",
+    "New Mexico" = "NM",
+    "New York" = "NY",
+    "North Carolina" = "NC",
+    "North Dakota" = "ND",
+    "Ohio" = "OH",
+    "Oklahoma" = "OK",
+    "Oregon" = "OR",
+    "Pennsylvania" = "PA",
+    "Rhode Island" = "RI",
+    "South Carolina" = "SC",
+    "South Dakota" = "SD",
+    "Tennessee" = "TN",
+    "Texas" = "TX",
+    "Utah" = "UT",
+    "Vermont" = "VT",
+    "Virginia" = "VA",
+    "Washington" = "WA",
+    "West Virginia" = "WV",
+    "Wisconsin" = "WI",
+    "Wyoming" = "WY",
+    "District of Columbia" = "DC",
+    "Prefer not to say" = "no_response"
+  )
+)
+
+
+sd_question(
+  type = "numeric", 
+  id = "zip_born",  
+  label = "In what zip code (e.g., 13790) did you grow up?",
+  min = 0,
+  max = 99950
+)
+
+sd_question(
+  type = "numeric", 
+  id = "zip_now",  
+  label = "In what zip code (e.g., 13790) did you currently live?",
+  min = 0,
+  max = 99950
+)
+
+sd_question(
+  type = "mc",
+  id = "political_beliefs",
+  label = "What are your political beliefs?", 
+option = c(
+ "Far Left / Leftist" = "far_left",
+ "Very Liberal" = "v_liberal",
+ "Liberal" = "liberal",
+ "Moderate" = "moderate",
+ "Conservative" = "conservative",
+ "Very Conservative" = "v_conservative",
+ "Far Right / Alt-Right" = "far_right",
+ "None of the above or don't know" = "none",
+ "Prefer not to say" = "PNS"
+)
+)
+
+sd_question(
+  type = "mc",
+  id = "political_affil",
+  label = "What is your political party affiliation?", 
+  option = c(
+    "Democratic Party" = "democratic",
+    "Republican Party" = "republican",
+    "Libertarian Party" = "libertarian",
+    "Green / Socialist Party" = "green_socialist",
+    "None of the above" = "none",
+    "No party affiliation (Independent)" = "independent"
+  )
+)
+
+sd_question(
+  type = "mc",
+  id = "vote_2024",
+  label = "Who did you vote for in the 2024 election?", 
+  option = c(
+    "Donald Trump" = "trump",
+    "Kamala Harris" = "harris",
+    "Jill Stein" = "stein",
+    "Robert Kennedy Jr." = "kennedy",
+    "Chase Oliver" = "oliver",
+    "Claudia De La Cruz" = "delacruz",
+    "Cornel West" = "west",
+    "DID NOT VOTE IN 2024" = "did_not_vote",
+    "Prefer not to say" = "PNS"
+  )
+)
+
+sd_next(next_page = "guess")
+```
+:::
+
+::: {#guess .sd-page}
+## Make your best (educated) guess!
+
+Imagine all Americans are divided into five groups based on their wealth, from the wealthiest 20% to the poorest 20%. How do you think wealth in the United States is currently distributed among these five groups? 
+
+Please enter your best estimate/guess of the percentage of total U.S. wealth held by each group.
+
+You can put any number between 0 and 100. Make sure your percents add up to 100.
+
+![](inequality%20graphic.png){fig-align="center"}
+
+```{r}
+sd_question(
+  type = "numeric", 
+  id = "top20_guess",  
+  label = "What percent of wealth is concentrated in the top 20%?",
+  min = 0,
+  max = 100
+)
+
+sd_question(
+  type = "numeric", 
+  id = "sec20_guess",  
+  label = "What percent of wealth is concentrated in the 2nd 20%?",
+  min = 0,
+  max = 100
+)
+
+
+sd_question(
+  type = "numeric", 
+  id = "third20_guess",  
+  label = "What percent of wealth is concentrated in the 3rd 20%?",
+  min = 0,
+  max = 100
+)
+
+
+
+sd_question(
+  type = "numeric", 
+  id = "fourth20_guess",  
+  label = "What percent of wealth is concentrated in the 4th 20%?",
+  min = 0,
+  max = 100
+)
+
+
+sd_question(
+  type = "numeric", 
+  id = "bottom20_guess",  
+  label = "What percent of wealth is concentrated in the bottom 20%?",
+  min = 0,
+  max = 100
+)
+
+sd_output("display_total_guess")
+
+
+sd_next(next_page = "ideal")
+
+```
+:::
+
+::: {#ideal .sd-page}
+## What do you think is fair?
+
+Imagine a society where you are randomly born into any wealth group, with an equal chance of being in each of the five groups. How do you think wealth should be distributed among these five groups to consider this society "fair"?
+
+Please enter the percentage of wealth each group should have for you to consider it fair.
+
+You can put any number between 0 and 100. Make sure your percents add up to 100.
+
+![](inequality%20graphic.png){fig-align="center"}
+
+```{r}
+sd_question(
+  type = "numeric", 
+  id = "top20_ideal",  
+  label = "What percent of wealth will be concentrated in the top 20%?",
+  min = 0,
+  max = 100
+)
+
+sd_question(
+  type = "numeric", 
+  id = "sec20_ideal",  
+  label = "What percent of wealth will be concentrated in the 2nd 20%?",
+  min = 0,
+  max = 100
+)
+
+
+sd_question(
+  type = "numeric", 
+  id = "third20_ideal",  
+  label = "What percent of wealth will be concentrated in the 3rd 20%?",
+  min = 0,
+  max = 100
+)
+
+
+sd_question(
+  type = "numeric", 
+  id = "fourth20_ideal",  
+  label = "What percent of wealth will be concentrated in the 4th 20%?",
+  min = 0,
+  max = 100
+)
+
+
+sd_question(
+  type = "numeric", 
+  id = "bottom20_ideal",  
+  label = "What percent of wealth will be concentrated in the bottom 20%?",
+  min = 0,
+  max = 100
+)
+
+sd_output("display_total_ideal")
+
+
+sd_next(next_page = "results")
+
+```
+:::
+
+::: {#results .sd-page}
+## Below are graphs of your choices, and the actual results...
+
+### The area of each plot represents the amount of wealth you have given to each group.
+
+**This is what you** ***guessed*** **the U.S. wealth distribution looks like:**
+
+```{r}
+# Plot of your guess
+
+shiny::plotOutput("guess_plot")
+
+sd_output("guess_percentages")
+```
+
+**This is what you** ***want*** **the U.S. wealth distribution to look like:**
+
+```{r}
+# Plot of ideal values
+
+shiny::plotOutput("ideal_plot")
+
+sd_output("ideal_percentages")
+
+```
+
+**This is what** ***the actual*** **U.S. wealth distribution looks like:**
+
+```{r}
+# Plot of actual values
+
+shiny::plotOutput("real_plot")
+
+sd_output("real_percentages")
+
+```
+
+[Source: USAFacts.Org](https://usafacts.org/articles/how-this-chart-explains-americans-wealth-across-income-levels/)
+
+**Compare your *guesses*, *ideals*, and *actual* wealth distributions below:**
+
+```{r}
+shiny::plotOutput("lollipop")
+```
+
+```{r}
+sd_close("End Survey")
+```
+:::
