@@ -1,4 +1,5 @@
-# install.packages("surveydown")
+#install.packages("surveydown")
+
 library(surveydown)
 library(sf)
 library(shiny)
@@ -9,12 +10,12 @@ library(tidyr)
 library(ggplot2)
 library(treemapify)
 library(scales)
+library(shinycssloaders)
 
 if(!require(pacman))install.packages("pacman")
 
 pacman::p_load('dplyr', 'tidyr', 'gapminder',
-               'ggplot2',  'ggalt',
-               'forcats', 'R.utils', 'png', 
+               'ggplot2', 'forcats', 'R.utils', 'png', 
                'grid', 'ggpubr', 'scales',
                'bbplot')
 
@@ -39,22 +40,19 @@ devtools::install_github('bbc/bbplot')
 # doing local testing. Once you're ready to collect survey responses, set
 # ignore = FALSE or just delete this argument.
 
-db <- sd_db_connect() # remove ignore when finished with app
-
-data <- sd_get_data(db)
 
 
 # Server setup ----------------------------------------------------------------
 
 server <- function(input, output, session) {
   
-  total_guess = sd_reactive("total_guess", {
+  total_guess <- reactive({
     input$top20_guess + input$sec20_guess +
       input$third20_guess + input$fourth20_guess +
       input$bottom20_guess
   })
   
-  output$display_total_guess = renderText({
+  output$display_total_guess <- renderText({
     paste("Total percent:", total_guess())
   })
   
@@ -82,13 +80,19 @@ server <- function(input, output, session) {
       scale_fill_manual(values=c("#8e44ad", "#2980b9", "#27ae60", "#f1c40f", "#c0392b"))
   })
   
-  output$guess_percentages = renderText({
-    paste("Top 20%:", input$top20_guess, "%, ", "2nd 20%:", input$sec20_guess, "%, ",
-          "3rd 20%:", input$third20_guess, "%, ", "4th 20%:", input$fourth20_guess, "%, ",
-          "Bottom 20%:", input$bottom20_guess, "%")
+  output$guess_percentages <- renderUI({
+    HTML(paste0(
+      "<p style='font-size:14px; margin-top:8px;'>",
+      "<b>Top 20%:</b> ", input$top20_guess, "% &nbsp;|&nbsp; ",
+      "<b>2nd 20%:</b> ", input$sec20_guess, "% &nbsp;|&nbsp; ",
+      "<b>3rd 20%:</b> ", input$third20_guess, "% &nbsp;|&nbsp; ",
+      "<b>4th 20%:</b> ", input$fourth20_guess, "% &nbsp;|&nbsp; ",
+      "<b>Bottom 20%:</b> ", input$bottom20_guess, "%",
+      "</p><hr style='margin: 24px 0;'>"
+    ))
   })
   
-  total_ideal = sd_reactive("total_ideal", {
+  total_ideal = reactive({
     input$top20_ideal + input$sec20_ideal +
       input$third20_ideal + input$fourth20_ideal +
       input$bottom20_ideal
@@ -97,6 +101,15 @@ server <- function(input, output, session) {
   output$display_total_ideal = renderText({
     paste("Total percent:", total_ideal())
   })
+  
+  sd_stop_if(
+    (input$top20_guess + input$sec20_guess + input$third20_guess + 
+       input$fourth20_guess + input$bottom20_guess) != 100 ~ 
+      "Your guess percentages must add up to 100% before continuing.",
+    (input$top20_ideal + input$sec20_ideal + input$third20_ideal + 
+       input$fourth20_ideal + input$bottom20_ideal) != 100 ~ 
+      "Your ideal percentages must add up to 100% before continuing."
+  )
   
   
   ideal_data = reactive({
@@ -121,10 +134,16 @@ server <- function(input, output, session) {
       scale_fill_manual(values=c("#8e44ad", "#2980b9", "#27ae60", "#f1c40f", "#c0392b"))
   })
   
-  output$ideal_percentages = renderText({
-    paste("Top 20%:", input$top20_ideal, "%, ", "2nd 20%:", input$sec20_ideal, "%, ",
-          "3rd 20%:", input$third20_ideal, "%, ", "4th 20%:", input$fourth20_ideal, "%, ",
-          "Bottom 20%:", input$bottom20_ideal, "%")
+  output$ideal_percentages <- renderUI({
+    HTML(paste0(
+      "<p style='font-size:14px; margin-top:8px;'>",
+      "<b>Top 20%:</b> ", input$top20_ideal, "% &nbsp;|&nbsp; ",
+      "<b>2nd 20%:</b> ", input$sec20_ideal, "% &nbsp;|&nbsp; ",
+      "<b>3rd 20%:</b> ", input$third20_ideal, "% &nbsp;|&nbsp; ",
+      "<b>4th 20%:</b> ", input$fourth20_ideal, "% &nbsp;|&nbsp; ",
+      "<b>Bottom 20%:</b> ", input$bottom20_ideal, "%",
+      "</p><hr style='margin: 24px 0;'>"
+    ))
   })
   
   
@@ -144,9 +163,16 @@ server <- function(input, output, session) {
       scale_fill_manual(values=c("#8e44ad", "#2980b9", "#27ae60", "#f1c40f", "#c0392b"))
   })
   
-  output$real_percentages = renderText({
-    paste("Top 20%: 76 %, ", "2nd 20%: 15 %, ", "3rd 20%: 6 %, ", 
-          "4th 20%: 2 %, ", "Bottom 20%: 1 %")
+  output$real_percentages <- renderUI({
+    HTML(paste0(
+      "<p style='font-size:14px; margin-top:8px;'>",
+      "<b>Top 20%:</b> 76% &nbsp;|&nbsp; ",
+      "<b>2nd 20%:</b> 15% &nbsp;|&nbsp; ",
+      "<b>3rd 20%:</b> 6% &nbsp;|&nbsp; ",
+      "<b>4th 20%:</b> 2% &nbsp;|&nbsp; ",
+      "<b>Bottom 20%:</b> 1%",
+      "</p>"
+    ))
   })
   
 
@@ -182,7 +208,7 @@ server <- function(input, output, session) {
                    color = "gray60", size = 1) +
       geom_point(data = df,
                  aes(x = Percentage, y = Bucket, color = Type),
-                 size = 4, alpha = 0.6) +
+                 size = 3) +
       scale_color_manual(
         values = c(
           "Guess" = "red",
@@ -210,17 +236,7 @@ server <- function(input, output, session) {
   sd_show_if()
 
   # Database designation and other settings
-  sd_server(
-    db = db,
-    required_questions = c("participant_id", "education", "socialstatus",
-                               "income", "religion", "racialized_id", "street_race",
-                               "sex", "disability", "gender", "sexual_id", "state", "zip_born",
-                               "zip_now", "political_beliefs", "political_affil", "political_group",
-                               "vote_2024", "top20_guess", "sec20_guess", "third20_guess", "fourth20_guess",
-                               "bottom20_guess", "top20_ideal", "sec20_ideal", "third20_ideal", "fourth20_ideal",
-                               "bottom20_ideal"),
-    use_cookies = FALSE # if cookies are left on it breaks if you want to retake the survey
-  )
+  sd_server(db = NULL)
 
 }
 
