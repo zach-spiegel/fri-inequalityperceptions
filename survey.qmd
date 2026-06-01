@@ -4,7 +4,10 @@ echo: false
 warning: false
 theme: sketchy
 barcolor: "#585454"
-barposition: top 
+barposition: top
+survey-settings:
+  use-cookies: false
+  show-previous: true
 ---
 
 ```{r}
@@ -32,8 +35,8 @@ sd_question(
   label = "If you were assigned a team ID, enter it here! (ex. FRI-PH-1) If you were not assigned a team ID, leave this field blank."
 )
 
+sd_nav(page_next = "demographics")
 
-sd_next(next_page = "demographics")
 ```
 :::
 
@@ -263,17 +266,13 @@ sd_question(
 sd_question(
   type = "numeric", 
   id = "zip_born",  
-  label = "In what zip code (e.g., 13790) did you grow up?",
-  min = 0,
-  max = 99950
+  label = "In what zip code (e.g., 13790) did you grow up?"
 )
 
 sd_question(
   type = "numeric", 
   id = "zip_now",  
-  label = "In what zip code (e.g., 13790) did you currently live?",
-  min = 0,
-  max = 99950
+  label = "In what zip code (e.g., 13790) did you currently live?"
 )
 
 sd_question(
@@ -324,14 +323,14 @@ sd_question(
   )
 )
 
-sd_next(next_page = "guess")
+sd_nav(page_next = "guess")
 ```
 :::
 
 ::: {#guess .sd-page}
 ## Make your best (educated) guess!
 
-Imagine all Americans are divided into five groups based on their wealth, from the wealthiest 20% to the poorest 20%. How do you think wealth in the United States is currently distributed among these five groups? 
+Imagine all Americans are divided into five groups based on their wealth, from the wealthiest 20% to the poorest 20%. How do you think wealth in the United States is currently distributed among these five groups?
 
 Please enter your best estimate/guess of the percentage of total U.S. wealth held by each group.
 
@@ -341,53 +340,53 @@ You can put any number between 0 and 100. Make sure your percents add up to 100.
 
 ```{r}
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "top20_guess",  
   label = "What percent of wealth is concentrated in the top 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "sec20_guess",  
   label = "What percent of wealth is concentrated in the 2nd 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "third20_guess",  
   label = "What percent of wealth is concentrated in the 3rd 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "fourth20_guess",  
   label = "What percent of wealth is concentrated in the 4th 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "bottom20_guess",  
   label = "What percent of wealth is concentrated in the bottom 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 sd_output("display_total_guess")
 
+sd_nav(page_next = "ideal")
 
-sd_next(next_page = "ideal")
 
 ```
 :::
@@ -405,52 +404,51 @@ You can put any number between 0 and 100. Make sure your percents add up to 100.
 
 ```{r}
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "top20_ideal",  
   label = "What percent of wealth will be concentrated in the top 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "sec20_ideal",  
   label = "What percent of wealth will be concentrated in the 2nd 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "third20_ideal",  
   label = "What percent of wealth will be concentrated in the 3rd 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "fourth20_ideal",  
   label = "What percent of wealth will be concentrated in the 4th 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 
 sd_question(
-  type = "numeric", 
+  type = "slider_numeric", 
   id = "bottom20_ideal",  
   label = "What percent of wealth will be concentrated in the bottom 20%?",
-  min = 0,
-  max = 100
+  option = seq(0, 100, 1),
+  default = 20
 )
 
 sd_output("display_total_ideal")
 
-
-sd_next(next_page = "results")
+sd_nav(page_next = "results")
 
 ```
 :::
@@ -465,7 +463,11 @@ sd_next(next_page = "results")
 ```{r}
 # Plot of your guess
 
-shiny::plotOutput("guess_plot")
+shinycssloaders::withSpinner(
+  shiny::plotOutput("guess_plot"),
+  type = 8,
+  color = "#333333"
+)
 
 sd_output("guess_percentages")
 ```
@@ -475,7 +477,11 @@ sd_output("guess_percentages")
 ```{r}
 # Plot of ideal values
 
-shiny::plotOutput("ideal_plot")
+shinycssloaders::withSpinner(
+  shiny::plotOutput("ideal_plot"),
+  type = 8,
+  color = "#333333"
+)
 
 sd_output("ideal_percentages")
 
@@ -486,7 +492,11 @@ sd_output("ideal_percentages")
 ```{r}
 # Plot of actual values
 
-shiny::plotOutput("real_plot")
+shinycssloaders::withSpinner(
+  shiny::plotOutput("real_plot"),
+  type = 8,
+  color = "#333333"
+)
 
 sd_output("real_percentages")
 
@@ -494,11 +504,19 @@ sd_output("real_percentages")
 
 [Source: USAFacts.Org](https://usafacts.org/articles/how-this-chart-explains-americans-wealth-across-income-levels/)
 
+------------------------------------------------------------------------
+
 **Compare your *guesses*, *ideals*, and *actual* wealth distributions below:**
 
 ```{r}
-shiny::plotOutput("lollipop")
+shinycssloaders::withSpinner(
+  shiny::plotOutput("lollipop"),
+  type = 8,
+  color = "#333333"
+)
 ```
+
+<br>
 
 ```{r}
 sd_close("End Survey")
